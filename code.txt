@@ -1,0 +1,195 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace library
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //считавание слов
+            string[] texts = File.ReadAllLines("bd.txt", Encoding.Default);
+
+            int count = 0;
+            count = texts.Count() - 1;
+
+                //условие работы
+                bool work = true;
+
+            while (work)
+            {
+                int k = 6; //для меню
+
+                bool bmenu = true; //для меню
+
+                int buff; //буффер
+
+                //меню
+                while (bmenu)
+                {
+                    if ((k == 1) || (k == 2) || (k == 3) || (k == 4))
+                    {
+                        bmenu = false;
+                    }
+                    else
+                    {
+                        if (k == 0)
+                        {
+                            bmenu = false;
+                            work = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+
+                            menu();
+
+                            k = int.Parse(Console.ReadLine());
+
+                            Console.WriteLine();
+                        }
+
+                    }
+
+
+
+                }
+
+                int k1;
+
+                switch (k)
+                {
+                    case (1):
+                        //увеличили массив
+                        Array.Resize(ref texts, texts.Length + 5);
+                        count = count + 5;
+
+                        //заполняем массив
+                        Console.WriteLine("номер УДК");
+                        texts[count - 4] = Console.ReadLine();
+
+                        Console.WriteLine("Фамилия и инициалы автора");
+                        texts[count - 3] = Console.ReadLine();
+
+                        Console.WriteLine("название");
+                        texts[count - 2] = Console.ReadLine();
+
+                        Console.WriteLine("год издания");
+                        texts[count - 1] = Console.ReadLine();
+
+                        //Console.WriteLine("количество экземпляров в библиотеке");
+                        texts[count] = "1";
+                        break;
+                    case (2):
+                        k1 = search(texts, count); //поиск книги
+
+                        //проверка наличия
+                        if ((k1 + 1) % 5 == 3)
+                        {
+                            Console.WriteLine("нет такой книги");
+                        }
+                        else
+                        {
+                            k1--;
+
+                            buff = int.Parse(texts[k1 + 2]);
+                            buff++;
+                            texts[k1 + 2] = buff.ToString();
+                        }
+
+                        break;
+                    case (3):
+                        k1 = search(texts, count); //поиск книги
+
+                        //проверка наличия
+                        if ((k1 + 1) % 5 == 3)
+                        {
+                            Console.WriteLine("нет такой книги");
+                        }
+                        else
+                        {
+                            k1--;
+
+                            buff = int.Parse(texts[k1 + 2]);
+                            buff--;
+                            texts[k1 + 2] = buff.ToString();
+                        }
+
+                        break;
+                    case (4):
+                        k1 = search(texts, count); //поиск книги
+
+                        //проверка наличия
+                        if ((k1 + 1) % 5 == 3)
+                        {
+                            Console.WriteLine("нет такой книги");
+                        }
+                        else
+                        {
+                            k1--;
+                            Console.WriteLine();
+                            Console.WriteLine("номер УДК: " + texts[k1 - 2]);
+                            Console.WriteLine("Фамилия и инициалы автора: " + texts[k1 - 1]);
+                            Console.WriteLine("название: " + texts[k1]);
+                            Console.WriteLine("год издания: " + texts[k1 + 1]);
+                            Console.WriteLine("количество экземпляров в библиотеке: " + texts[k1 + 2]);
+                        }
+                        break;
+                    case (5):
+                        k1 = search(texts, count); //поиск книги
+
+                        //проверка наличия
+                        if ((k1 + 1) % 5 == 3)
+                        {
+                            Console.WriteLine("нет такой книги");
+                        }
+                        else
+                        {
+                            k1--;
+                            //уменьшили массив
+                            Array.Resize(ref texts, texts.Length - 5);
+                            count = count - 5;
+                        }
+                        break;
+                }
+            }
+
+            File.Delete("bd.txt");
+            File.WriteAllLines("bd.txt", texts);
+  
+        }
+        static void menu()
+        {
+            Console.WriteLine("1) добавить книгу");
+            Console.WriteLine("2) вернуть книгу");
+            Console.WriteLine("3) взять книгу");
+            Console.WriteLine("4) узнать данные о книге");
+            Console.WriteLine("5) удалить книгу");
+            Console.WriteLine("введите 0, чтобы выйти");
+        }
+        static int search(string[] texts, int count)
+        {
+            int k2 = 0;
+            StreamReader reader = new StreamReader("bd.txt", Encoding.Default);
+            
+            int i = 2;
+            Console.WriteLine("введите название книги");
+            string name_s = Console.ReadLine();
+            while ((i + 3 < count) && (!texts[i].Equals(name_s)))
+            {
+                Console.WriteLine(texts[i]);
+                i = i + 5;
+            }
+            if (texts[i].Equals(name_s))
+                k2++;
+            if (k2 > 0)
+                i++;
+            
+            return i;
+        }
+    }
+}
